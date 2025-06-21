@@ -176,4 +176,5 @@ docker-compose run --rm email-audit your-email-file.eml --rules custom-rules.jso
 - **Error Handling**: Assumes graceful degradation when rules fail or content is malformed
 
 
-![Test Screenshot](image.png)
+## Test Screenshot
+![Test Screenshot](image-1.png)
