@@ -174,3 +174,6 @@ docker-compose run --rm email-audit your-email-file.eml --rules custom-rules.jso
 - **Configuration**: Assumes JSON format is sufficient for rule definitions
 - **Function Mapping**: Assumes rule functions follow consistent return format
 - **Error Handling**: Assumes graceful degradation when rules fail or content is malformed
+
+
+![Test Screenshot](image.png)
