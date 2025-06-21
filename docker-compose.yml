@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  email-audit:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: ["python", "main.py"]
+    # To run: docker-compose run --rm email-audit <path-to-your.eml> 

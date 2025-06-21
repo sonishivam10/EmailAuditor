@@ -1,0 +1,36 @@
+From: john.doe@company.com
+To: customer@example.com
+Subject: RE: Project Update Request
+Date: Mon, 15 Jan 2024 10:30:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary123"
+
+--boundary123
+Content-Type: text/plain; charset="UTF-8"
+
+Hello there,
+
+I hope this email finds you well. I wanted to follow up on your recent request for a project update.
+
+Unfortunately, we have encountered some delays due to technical issues that are affecting our timeline. The development team is working diligently to resolve these problems, but we may need to extend the deadline by approximately one week.
+
+Please let me know if you have any questions or concerns about this situation. I will keep you updated as we make progress.
+
+Thank you for your patience and understanding.
+
+Best regards,
+John Doe
+Project Manager
+
+--boundary123
+Content-Type: image/jpeg; name="project_screenshot.jpg"
+Content-Disposition: attachment; filename="project_screenshot.jpg"
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB
+AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB
+AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQAB
+AQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAA
+AAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A
+
+--boundary123-- 

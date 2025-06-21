@@ -1,0 +1,30 @@
+From: jane.smith@company.com
+To: client@example.com
+Subject: URGENT!!! Project Status
+Date: Mon, 15 Jan 2024 14:45:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary456"
+
+--boundary456
+Content-Type: text/plain; charset="UTF-8"
+
+URGENT!!! We need to talk about the project RIGHT NOW!!!
+
+Your project is behind schedule and we need you to respond immediately. The team is working on it but there are problems with the code and we cant figure out what's wrong.
+
+Please call me as soon as possible because this is very important and we need to fix this today!!!
+
+Also, there budget issues that need to be addressed. We need more money to complete the work.
+
+Let me know what you think about this situation.
+
+Jane
+
+--boundary456
+Content-Type: image/png; name="error_screenshot.png"
+Content-Disposition: attachment; filename="error_screenshot.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==
+
+--boundary456-- 

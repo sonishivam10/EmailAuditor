@@ -1,0 +1,17 @@
+[
+    {
+        "id": "greeting_present",
+        "description": "Check if the email contains a greeting.",
+        "function": "check_greeting"
+    },
+    {
+        "id": "grammar_quality",
+        "description": "Check the grammar quality of the email.",
+        "function": "check_grammar"
+    },
+    {
+        "id": "clarity",
+        "description": "Check if the email is clear and concise.",
+        "function": "check_clarity"
+    }
+] 

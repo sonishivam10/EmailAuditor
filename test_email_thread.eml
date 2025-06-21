@@ -1,0 +1,166 @@
+From: alice.manager@company.com
+To: bob.employee@company.com
+Subject: Project Status Update Required
+Date: Mon, 15 Jan 2024 09:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary1"
+
+--boundary1
+Content-Type: text/plain; charset="UTF-8"
+
+Dear Bob,
+
+I hope this email finds you well. I wanted to follow up on the project status update that was due last Friday.
+
+Could you please provide a comprehensive update on the current progress, including any challenges you're facing and the expected completion timeline?
+
+I appreciate your hard work on this project and look forward to hearing from you.
+
+Best regards,
+Alice
+Project Manager
+
+--boundary1
+Content-Type: image/jpeg; name="project_timeline.jpg"
+Content-Disposition: attachment; filename="project_timeline.jpg"
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB
+AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB
+AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQAB
+AQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAA
+AAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A
+
+--boundary1--
+
+From: bob.employee@company.com
+To: alice.manager@company.com
+Subject: RE: Project Status Update Required
+Date: Mon, 15 Jan 2024 14:30:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary2"
+
+--boundary2
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Alice,
+
+Thanks for reaching out. I've been working on the project and have made significant progress.
+
+The main components are nearly complete, but we've encountered some technical challenges with the integration phase. The team is actively working to resolve these issues.
+
+I expect to have a detailed report ready by Wednesday. Will keep you updated on any developments.
+
+Regards,
+Bob
+
+--boundary2--
+
+From: alice.manager@company.com
+To: bob.employee@company.com
+Subject: RE: Project Status Update Required
+Date: Tue, 16 Jan 2024 10:15:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Hello Bob,
+
+Thank you for the update. I appreciate you keeping me informed about the progress and challenges.
+
+Could you please provide more specific details about the technical challenges you mentioned? This will help me understand if we need to allocate additional resources or adjust the timeline.
+
+Also, please include the current completion percentage and any dependencies that might affect the Wednesday deadline.
+
+Looking forward to your detailed report.
+
+Best regards,
+Alice
+
+From: bob.employee@company.com
+To: alice.manager@company.com
+Subject: RE: Project Status Update Required
+Date: Tue, 16 Jan 2024 16:45:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary3"
+
+--boundary3
+Content-Type: text/plain; charset="UTF-8"
+
+URGENT!!! Alice we have a BIG PROBLEM!!!
+
+The integration is completely broken and we cant get it to work. The team has been working all day but nothing is working. We need more time and maybe more developers.
+
+I'm really stressed about this and dont know what to do. The deadline is impossible to meet with these issues.
+
+Please help us figure this out ASAP!!!
+
+Bob
+
+--boundary3
+Content-Type: image/png; name="error_screenshot.png"
+Content-Disposition: attachment; filename="error_screenshot.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==
+
+--boundary3--
+
+From: alice.manager@company.com
+To: bob.employee@company.com
+Subject: RE: Project Status Update Required
+Date: Wed, 17 Jan 2024 08:30:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Dear Bob,
+
+I understand this is a challenging situation, and I appreciate you bringing this to my attention promptly.
+
+Let's schedule a meeting today to discuss the technical challenges in detail. I'd like to understand the specific issues you're facing so we can determine the best path forward.
+
+In the meantime, please prepare a detailed breakdown of:
+1. The specific integration problems
+2. What has been tried so far
+3. Potential solutions you've identified
+4. Realistic timeline estimates
+
+We'll work together to find a solution that meets our project goals while being realistic about the current challenges.
+
+Thank you for your continued dedication to this project.
+
+Best regards,
+Alice
+Project Manager
+
+From: bob.employee@company.com
+To: alice.manager@company.com
+Subject: RE: Project Status Update Required
+Date: Wed, 17 Jan 2024 17:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Alice,
+
+Thank you for your understanding and support. The meeting today was very helpful.
+
+I've prepared the detailed breakdown you requested:
+
+**Integration Problems:**
+- Database connection issues with the new API
+- Authentication conflicts between systems
+- Performance bottlenecks in data processing
+
+**Attempted Solutions:**
+- Updated API endpoints
+- Modified authentication protocols
+- Optimized database queries
+
+**Proposed Timeline:**
+- Current completion: 75%
+- Estimated additional time needed: 2 weeks
+- New target completion date: January 31st
+
+I believe with the additional resources we discussed, we can meet this timeline successfully.
+
+Regards,
+Bob 
