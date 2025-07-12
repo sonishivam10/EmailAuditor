@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_login import LoginManager
 from config import get_config
-from .models.database import db
+from .models.database import db, init_database, init_database_docker
 from .models import User
 import os
 
@@ -37,8 +37,7 @@ def create_app(config_name=None):
     app.register_blueprint(web_bp)
     app.register_blueprint(api_bp, url_prefix='/api')
     
-    # Create database tables
-    with app.app_context():
-        db.create_all()
+    # Initialize database safely (use Docker-specific init if in container)
+    init_database_docker(app)
     
     return app 

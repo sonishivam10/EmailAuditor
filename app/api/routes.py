@@ -90,4 +90,59 @@ def manage_api_key():
         db.session.commit()
         return jsonify({'api_key': current_user.api_key})
     else:
-        return jsonify({'api_key': current_user.api_key}) 
+        return jsonify({'api_key': current_user.api_key})
+
+@api_bp.route('/health')
+def api_health_check():
+    """Detailed health check endpoint for API monitoring."""
+    try:
+        # Check database connection
+        db.session.execute(text('SELECT 1'))
+        
+        # Check if services can be imported
+        from ..services.email_service import EmailService
+        from ..services.audit_service import AuditService
+        
+        # Get basic stats
+        user_count = User.query.count()
+        audit_count = EmailAudit.query.count()
+        
+        health_status = {
+            'status': 'healthy',
+            'timestamp': datetime.utcnow().isoformat(),
+            'version': '2.0.0',
+            'environment': current_app.config.get('FLASK_ENV', 'development'),
+            'services': {
+                'database': {
+                    'status': 'connected',
+                    'users': user_count,
+                    'audits': audit_count
+                },
+                'email_service': 'available',
+                'audit_service': 'available',
+                'rate_limiter': 'available'
+            },
+            'limits': {
+                'free_tier_daily': current_app.config.get('FREE_TIER_DAILY_LIMIT', 5),
+                'premium_tier_daily': current_app.config.get('PREMIUM_TIER_DAILY_LIMIT', 100)
+            }
+        }
+        
+        return jsonify(health_status), 200
+        
+    except Exception as e:
+        health_status = {
+            'status': 'unhealthy',
+            'timestamp': datetime.utcnow().isoformat(),
+            'version': '2.0.0',
+            'environment': current_app.config.get('FLASK_ENV', 'development'),
+            'error': str(e),
+            'services': {
+                'database': 'error',
+                'email_service': 'unknown',
+                'audit_service': 'unknown',
+                'rate_limiter': 'unknown'
+            }
+        }
+        
+        return jsonify(health_status), 503 

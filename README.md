@@ -105,7 +105,7 @@ EmailAuditor/
 
 5. **Initialize database**
    ```bash
-   python manage.py init-db
+   python manage_db.py init
    ```
 
 6. **Run the application**
@@ -269,15 +269,37 @@ pytest --cov=app tests/
 
 ## 🔧 Management Commands
 
-### Initialize Database
+### Database Management
+
+The application includes a database management script for various operations:
+
 ```bash
-python manage.py init-db
+# Initialize database tables
+python manage_db.py init
+
+# Check database status
+python manage_db.py check
+
+# Reset database (WARNING: deletes all data)
+python manage_db.py reset
+
+# Create admin user
+python manage_db.py create-admin
 ```
 
-### Create Admin User
-```bash
-python manage.py create-admin
-```
+### Troubleshooting Deployment Issues
+
+If you encounter database errors during deployment (like "table already exists"), the application now handles this gracefully. The database initialization will:
+
+1. Check if tables already exist
+2. Skip table creation if they exist
+3. Create tables only if they're missing
+4. Log the status for debugging
+
+For Render deployment specifically:
+- The application automatically handles existing database tables
+- No manual database reset is required between deployments
+- Database state is preserved across deployments
 
 ### Test Email Configuration
 ```bash
@@ -289,9 +311,66 @@ python manage.py test-email
 ### Logs
 Application logs are stored in `logs/app.log` with rotation.
 
+### Ping (Basic Connectivity)
+```http
+GET /ping
+```
+
+**Response:**
+```json
+{
+  "message": "pong",
+  "timestamp": "2024-01-15T10:30:00.000Z"
+}
+```
+
 ### Health Check
 ```http
 GET /health
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "version": "2.0.0",
+  "services": {
+    "database": "connected",
+    "email_service": "available",
+    "audit_service": "available"
+  },
+  "uptime": "running"
+}
+```
+
+**API Health Check:**
+```http
+GET /api/health
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "version": "2.0.0",
+  "environment": "production",
+  "services": {
+    "database": {
+      "status": "connected",
+      "users": 25,
+      "audits": 150
+    },
+    "email_service": "available",
+    "audit_service": "available",
+    "rate_limiter": "available"
+  },
+  "limits": {
+    "free_tier_daily": 5,
+    "premium_tier_daily": 100
+  }
+}
 ```
 
 ## 🔒 Security Features

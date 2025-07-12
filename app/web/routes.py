@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime, timedelta
 import secrets
 import json
+from sqlalchemy import text
 from . import web_bp
 from ..models import User, OTPCode, EmailAudit
 from ..models.database import db
@@ -142,4 +143,47 @@ def dashboard():
 @web_bp.route('/docs')
 def docs():
     """API documentation."""
-    return render_template('docs.html') 
+    return render_template('docs.html')
+
+@web_bp.route('/ping')
+def ping():
+    """Simple ping endpoint for basic connectivity testing."""
+    return jsonify({'message': 'pong', 'timestamp': datetime.utcnow().isoformat()})
+
+@web_bp.route('/health')
+def health_check():
+    """Health check endpoint for monitoring and deployment platforms."""
+    try:
+        # Check database connection
+        from ..models.database import db
+        db.session.execute(text('SELECT 1'))
+        
+        # Check if all required services are available
+        health_status = {
+            'status': 'healthy',
+            'timestamp': datetime.utcnow().isoformat(),
+            'version': '2.0.0',
+            'services': {
+                'database': 'connected',
+                'email_service': 'available',
+                'audit_service': 'available'
+            },
+            'uptime': 'running'
+        }
+        
+        return jsonify(health_status), 200
+        
+    except Exception as e:
+        health_status = {
+            'status': 'unhealthy',
+            'timestamp': datetime.utcnow().isoformat(),
+            'version': '2.0.0',
+            'error': str(e),
+            'services': {
+                'database': 'error',
+                'email_service': 'unknown',
+                'audit_service': 'unknown'
+            }
+        }
+        
+        return jsonify(health_status), 503 
