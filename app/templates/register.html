@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Email Auditor{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h3 class="text-center mb-4">
+                    <i class="fas fa-user-plus text-primary me-2"></i>
+                    Register
+                </h3>
+                
+                <div id="registerForm">
+                    <form id="registerFormElement">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mobile" class="form-label">Mobile (Optional)</label>
+                            <input type="tel" class="form-control" id="mobile" name="mobile">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary" id="sendOtpBtn">
+                                <i class="fas fa-paper-plane me-2"></i>Send OTP
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="otpForm" style="display: none;">
+                    <form id="otpFormElement">
+                        <input type="hidden" id="userId" name="user_id">
+                        <div class="mb-3">
+                            <label for="otp" class="form-label">Enter OTP</label>
+                            <input type="text" class="form-control" id="otp" name="otp" maxlength="6" required>
+                            <div class="form-text">We've sent a 6-digit code to your email/mobile</div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="verifyOtpBtn">
+                                <i class="fas fa-check me-2"></i>Verify OTP
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="showRegisterForm()">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Register
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <hr class="my-4">
+                <div class="text-center">
+                    <p class="mb-0">Already have an account? 
+                        <a href="{{ url_for('web.login') }}" class="text-decoration-none">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('registerFormElement').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+    setLoadingState(sendOtpBtn, true);
+    
+    const formData = new FormData(this);
+    const data = {
+        email: formData.get('email'),
+        mobile: formData.get('mobile')
+    };
+    
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            document.getElementById('userId').value = result.user_id;
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('otpForm').style.display = 'block';
+            showAlert('OTP sent successfully!', 'success');
+        } else {
+            showAlert(result.error, 'danger');
+        }
+    } catch (error) {
+        showAlert('An error occurred. Please try again.', 'danger');
+    } finally {
+        setLoadingState(sendOtpBtn, false);
+    }
+});
+
+document.getElementById('otpFormElement').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    setLoadingState(verifyOtpBtn, true);
+    
+    const formData = new FormData(this);
+    const data = {
+        user_id: formData.get('user_id'),
+        otp: formData.get('otp')
+    };
+    
+    try {
+        const response = await fetch('/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showAlert('Registration successful!', 'success');
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1000);
+        } else {
+            showAlert(result.error, 'danger');
+        }
+    } catch (error) {
+        showAlert('An error occurred. Please try again.', 'danger');
+    } finally {
+        setLoadingState(verifyOtpBtn, false);
+    }
+});
+
+function showRegisterForm() {
+    document.getElementById('otpForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %} 

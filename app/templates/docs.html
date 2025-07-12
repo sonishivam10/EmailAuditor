@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation - Email Auditor{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3">
+        <!-- Sidebar Navigation -->
+        <div class="card shadow sticky-top" style="top: 2rem;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-book me-2"></i>
+                    Documentation
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="#overview">Overview</a>
+                    <a class="nav-link" href="#authentication">Authentication</a>
+                    <a class="nav-link" href="#endpoints">API Endpoints</a>
+                    <a class="nav-link" href="#rate-limiting">Rate Limiting</a>
+                    <a class="nav-link" href="#examples">Code Examples</a>
+                    <a class="nav-link" href="#errors">Error Handling</a>
+                    <a class="nav-link" href="#web-interface">Web Interface</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-9">
+        <!-- Documentation Content -->
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 class="mb-4">
+                    <i class="fas fa-code text-primary me-3"></i>
+                    API Documentation
+                </h1>
+
+                <!-- Overview Section -->
+                <section id="overview" class="mb-5">
+                    <h2 class="border-bottom pb-2">Overview</h2>
+                    <p class="lead">
+                        The Email Auditor API provides programmatic access to email quality analysis and auditing services.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-check-circle text-success me-2"></i>Features</h5>
+                                    <ul class="list-unstyled">
+                                        <li>• Grammar and style analysis</li>
+                                        <li>• Quality scoring (0-100)</li>
+                                        <li>• Detailed rule-based feedback</li>
+                                        <li>• Professional communication standards</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-shield-alt text-info me-2"></i>Security</h5>
+                                    <ul class="list-unstyled">
+                                        <li>• API key authentication</li>
+                                        <li>• Rate limiting per user</li>
+                                        <li>• Secure file handling</li>
+                                        <li>• HTTPS recommended</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Authentication Section -->
+                <section id="authentication" class="mb-5">
+                    <h2 class="border-bottom pb-2">Authentication</h2>
+                    <p>All API requests require authentication using an API key in the request header.</p>
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-key me-2"></i>API Key Header</h6>
+                        <code>X-API-Key: your_api_key_here</code>
+                    </div>
+
+                    <h5>Getting Your API Key</h5>
+                    <ol>
+                        <li>Register for an account at the web interface</li>
+                        <li>Log in to your dashboard</li>
+                        <li>Copy your API key from the "API Access" section</li>
+                        <li>Use this key in all API requests</li>
+                    </ol>
+
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Security Note</h6>
+                        <p class="mb-0">Keep your API key secure and never share it publicly. You can regenerate your key from the dashboard if needed.</p>
+                    </div>
+                </section>
+
+                <!-- API Endpoints Section -->
+                <section id="endpoints" class="mb-5">
+                    <h2 class="border-bottom pb-2">API Endpoints</h2>
+
+                    <!-- Audit Email Endpoint -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <span class="badge bg-success me-2">POST</span>
+                                /api/audit
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Description:</strong> Analyze an email file (.eml format) for quality and compliance.</p>
+                            
+                            <h6>Request</h6>
+                            <pre><code>POST /api/audit
+Content-Type: multipart/form-data
+X-API-Key: your_api_key_here
+
+file: [.eml file]</code></pre>
+
+                            <h6>Response</h6>
+                            <pre><code>{
+  "score": 85,
+  "rules": [
+    {
+      "rule_id": "grammar_check",
+      "description": "Grammar and spelling check",
+      "passed": true,
+      "score": 90,
+      "justification": "Good grammar usage"
+    }
+  ],
+  "summary": {
+    "strengths": ["Clear communication"],
+    "improvements": ["Consider shorter sentences"]
+  }
+}</code></pre>
+
+                            <h6>Response Fields</h6>
+                            <ul>
+                                <li><code>score</code> - Overall quality score (0-100)</li>
+                                <li><code>rules</code> - Array of individual rule results</li>
+                                <li><code>summary</code> - Strengths and improvement areas</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Usage Endpoint -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <span class="badge bg-primary me-2">GET</span>
+                                /api/usage
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Description:</strong> Check your current usage and rate limit status.</p>
+                            
+                            <h6>Request</h6>
+                            <pre><code>GET /api/usage
+X-API-Key: your_api_key_here</code></pre>
+
+                            <h6>Response</h6>
+                            <pre><code>{
+  "today_usage": 2,
+  "daily_limit": 5,
+  "remaining": 3,
+  "subscription_tier": "free"
+}</code></pre>
+
+                            <h6>Response Fields</h6>
+                            <ul>
+                                <li><code>today_usage</code> - Number of emails analyzed today</li>
+                                <li><code>daily_limit</code> - Your daily limit based on tier</li>
+                                <li><code>remaining</code> - Remaining emails for today</li>
+                                <li><code>subscription_tier</code> - Your current plan (free/premium)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Rate Limiting Section -->
+                <section id="rate-limiting" class="mb-5">
+                    <h2 class="border-bottom pb-2">Rate Limiting</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">Free Tier</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i>5 emails per day</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Basic analysis</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>API access</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>No credit card required</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">Premium Tier</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i>100 emails per day</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Advanced analysis</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Priority support</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Detailed reports</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <h6><i class="fas fa-info-circle me-2"></i>Rate Limit Headers</h6>
+                        <p class="mb-0">When you approach your limit, the API will include rate limit headers in the response:</p>
+                        <code>X-RateLimit-Remaining: 2</code><br>
+                        <code>X-RateLimit-Reset: 1640995200</code>
+                    </div>
+                </section>
+
+                <!-- Code Examples Section -->
+                <section id="examples" class="mb-5">
+                    <h2 class="border-bottom pb-2">Code Examples</h2>
+
+                    <!-- Python Example -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fab fa-python me-2"></i>
+                                Python
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <pre><code>import requests
+
+# Configuration
+API_KEY = "your_api_key_here"
+BASE_URL = "http://localhost:5000"
+
+# Audit an email
+def audit_email(file_path):
+    url = f"{BASE_URL}/api/audit"
+    headers = {"X-API-Key": API_KEY}
+    
+    with open(file_path, "rb") as f:
+        files = {"file": f}
+        response = requests.post(url, files=files, headers=headers)
+    
+    if response.status_code == 200:
+        result = response.json()
+        print(f"Email Score: {result['score']}")
+        return result
+    else:
+        print(f"Error: {response.json()['error']}")
+
+# Check usage
+def check_usage():
+    url = f"{BASE_URL}/api/usage"
+    headers = {"X-API-Key": API_KEY}
+    
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        usage = response.json()
+        print(f"Used: {usage['today_usage']}/{usage['daily_limit']}")
+        return usage
+
+# Example usage
+if __name__ == "__main__":
+    audit_email("email.eml")
+    check_usage()</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- cURL Example -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-terminal me-2"></i>
+                                cURL
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <pre><code># Audit an email
+curl -X POST \
+  -H "X-API-Key: your_api_key_here" \
+  -F "file=@email.eml" \
+  http://localhost:5000/api/audit
+
+# Check usage
+curl -X GET \
+  -H "X-API-Key: your_api_key_here" \
+  http://localhost:5000/api/usage</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- JavaScript Example -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fab fa-js me-2"></i>
+                                JavaScript
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <pre><code>// Audit an email
+async function auditEmail(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch('/api/audit', {
+        method: 'POST',
+        headers: {
+            'X-API-Key': 'your_api_key_here'
+        },
+        body: formData
+    });
+    
+    if (response.ok) {
+        const result = await response.json();
+        console.log('Email Score:', result.score);
+        return result;
+    } else {
+        const error = await response.json();
+        console.error('Error:', error.error);
+    }
+}
+
+// Check usage
+async function checkUsage() {
+    const response = await fetch('/api/usage', {
+        headers: {
+            'X-API-Key': 'your_api_key_here'
+        }
+    });
+    
+    if (response.ok) {
+        const usage = await response.json();
+        console.log(`Used: ${usage.today_usage}/${usage.daily_limit}`);
+        return usage;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Error Handling Section -->
+                <section id="errors" class="mb-5">
+                    <h2 class="border-bottom pb-2">Error Handling</h2>
+                    
+                    <p>The API uses standard HTTP status codes and returns error details in JSON format.</p>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Status Code</th>
+                                    <th>Error Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="badge bg-danger">400</span></td>
+                                    <td>Bad Request</td>
+                                    <td>Invalid file format or missing file</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-danger">401</span></td>
+                                    <td>Unauthorized</td>
+                                    <td>Missing or invalid API key</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-warning">429</span></td>
+                                    <td>Too Many Requests</td>
+                                    <td>Daily rate limit exceeded</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-danger">500</span></td>
+                                    <td>Internal Server Error</td>
+                                    <td>Server processing error</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h5>Error Response Format</h5>
+                    <pre><code>{
+  "error": "Error message description"
+}</code></pre>
+                </section>
+
+                <!-- Web Interface Section -->
+                <section id="web-interface" class="mb-5">
+                    <h2 class="border-bottom pb-2">Web Interface</h2>
+                    
+                    <p>In addition to the API, Email Auditor provides a user-friendly web interface for:</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-upload text-primary me-2"></i>File Upload</h5>
+                                    <p>Drag and drop .eml files for instant analysis with visual results.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-chart-line text-success me-2"></i>Usage Tracking</h5>
+                                    <p>Monitor your daily usage and remaining quota in real-time.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success mt-3">
+                        <h6><i class="fas fa-link me-2"></i>Access Web Interface</h6>
+                        <p class="mb-0">Visit <a href="{{ url_for('web.index') }}" class="alert-link">the homepage</a> to get started with the web interface.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,5 +1,5 @@
 import re
-import textstat
+import math
 
 def check_greeting(email_text):
     """Check if the email contains an appropriate greeting."""
@@ -58,17 +58,21 @@ def check_grammar(email_text):
         issues.append(f"Found {mistake_count} potential grammar issues")
         score -= min(3, mistake_count)
     
-    # Use textstat for readability metrics
-    try:
-        flesch_reading_ease = textstat.flesch_reading_ease(email_text)
-        if flesch_reading_ease < 30:
-            issues.append("Text is too complex (low readability score)")
-            score -= 2
-        elif flesch_reading_ease > 90:
-            issues.append("Text might be too simple")
+    # Basic readability check
+    word_count = len(email_text.split())
+    if word_count > 0:
+        avg_word_length = sum(len(word) for word in email_text.split()) / word_count
+        if avg_word_length > 8:
+            issues.append("Text might be too complex (long average word length)")
             score -= 1
-    except:
-        pass  # textstat might fail on very short text
+        
+        # Check sentence complexity
+        sentences = re.split(r'[.!?]+', email_text)
+        if sentences:
+            avg_sentence_length = word_count / len([s for s in sentences if s.strip()])
+            if avg_sentence_length > 25:
+                issues.append("Sentences are too long - consider breaking them up")
+                score -= 1
     
     justification = "Grammar quality is good." if not issues else f"Grammar issues found: {'; '.join(issues)}"
     return {'passed': score >= 7, 'score': max(0, score), 'justification': justification}

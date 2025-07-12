@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Email Auditor{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-upload me-2"></i>
+                    Upload Email for Analysis
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="emailFile" class="form-label">Select .eml file</label>
+                        <input type="file" class="form-control" id="emailFile" name="file" accept=".eml" required>
+                        <div class="form-text">Upload an email file (.eml format) to analyze its content and quality.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="uploadBtn">
+                        <i class="fas fa-search me-2"></i>Analyze Email
+                    </button>
+                </form>
+                
+                <div id="uploadProgress" class="mt-3" style="display: none;">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                    </div>
+                    <small class="text-muted">Analyzing email content...</small>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div class="card shadow">
+                <div class="card-header">
+                                    <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Analysis Results
+                </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="text-center">
+                                <h3 id="overallScore" class="text-primary mb-0">0</h3>
+                                <p class="text-muted">Overall Score</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center">
+                                <h3 id="rulesChecked" class="text-success mb-0">0</h3>
+                                <p class="text-muted">Rules Checked</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="rulesResults"></div>
+                    
+                    <div class="mt-4">
+                        <h6>Summary</h6>
+                        <div id="summarySection"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    Account Info
+                </h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Email:</strong> {{ current_user.email or 'Not provided' }}</p>
+                <p><strong>Mobile:</strong> {{ current_user.mobile or 'Not provided' }}</p>
+                <p><strong>Plan:</strong> <span class="badge bg-primary">{{ current_user.subscription_tier.title() }}</span></p>
+                <p><strong>Member since:</strong> {{ current_user.created_at.strftime('%B %Y') }}</p>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Usage Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="usageStats">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-key me-2"></i>
+                    API Access
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">Use this API key to access the Email Auditor API programmatically.</p>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="apiKey" value="{{ current_user.api_key }}" readonly>
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyApiKey()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-outline-primary btn-sm" id="regenerateKeyBtn" onclick="regenerateApiKey()">
+                        <i class="fas fa-sync-alt me-2"></i>Regenerate Key
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load usage statistics
+loadUsageStats();
+
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const fileInput = document.getElementById('emailFile');
+    
+    if (!fileInput.files[0]) {
+        showAlert('Please select a file to upload.', 'warning');
+        return;
+    }
+    
+    // Show loading state
+    const uploadBtn = document.getElementById('uploadBtn');
+    setLoadingState(uploadBtn, true);
+    document.getElementById('uploadProgress').style.display = 'block';
+    
+    try {
+        const response = await fetch('/api/audit', {
+            method: 'POST',
+            headers: {
+                'X-API-Key': '{{ current_user.api_key }}'
+            },
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            displayResults(result);
+            showAlert('Email analyzed successfully!', 'success');
+            loadUsageStats(); // Refresh usage stats
+        } else {
+            showAlert(result.error, 'danger');
+        }
+    } catch (error) {
+        showAlert('An error occurred while analyzing the email.', 'danger');
+    } finally {
+        document.getElementById('uploadProgress').style.display = 'none';
+        setLoadingState(uploadBtn, false);
+    }
+});
+
+function displayResults(data) {
+    document.getElementById('resultsSection').style.display = 'block';
+    
+    // Update overall score
+    document.getElementById('overallScore').textContent = data.score || 0;
+    document.getElementById('rulesChecked').textContent = data.rules ? data.rules.length : 0;
+    
+    // Display rules results
+    const rulesContainer = document.getElementById('rulesResults');
+    rulesContainer.innerHTML = '';
+    
+    if (data.rules && data.rules.length > 0) {
+        data.rules.forEach(rule => {
+            const ruleCard = document.createElement('div');
+            ruleCard.className = 'card mb-2';
+            ruleCard.innerHTML = `
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">${rule.description || rule.rule_id}</h6>
+                            <p class="mb-0 text-muted small">${rule.justification || 'No details available'}</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge ${rule.passed ? 'bg-success' : 'bg-danger'}">${rule.passed ? 'Pass' : 'Fail'}</span>
+                            <div class="small text-muted">Score: ${rule.score || 0}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            rulesContainer.appendChild(ruleCard);
+        });
+    }
+    
+    // Display summary
+    const summaryContainer = document.getElementById('summarySection');
+    summaryContainer.innerHTML = '';
+    
+    if (data.summary) {
+        if (data.summary.strengths && data.summary.strengths.length > 0) {
+            const strengthsDiv = document.createElement('div');
+            strengthsDiv.className = 'mb-3';
+            strengthsDiv.innerHTML = `
+                <h6 class="text-success">Strengths:</h6>
+                <ul class="list-unstyled">
+                    ${data.summary.strengths.map(strength => `<li><i class="fas fa-check text-success me-2"></i>${strength}</li>`).join('')}
+                </ul>
+            `;
+            summaryContainer.appendChild(strengthsDiv);
+        }
+        
+        if (data.summary.improvements && data.summary.improvements.length > 0) {
+            const improvementsDiv = document.createElement('div');
+            improvementsDiv.innerHTML = `
+                <h6 class="text-warning">Areas for Improvement:</h6>
+                <ul class="list-unstyled">
+                    ${data.summary.improvements.map(improvement => `<li><i class="fas fa-exclamation-triangle text-warning me-2"></i>${improvement}</li>`).join('')}
+                </ul>
+            `;
+            summaryContainer.appendChild(improvementsDiv);
+        }
+    }
+}
+
+async function loadUsageStats() {
+    try {
+        const response = await fetch('/api/usage', {
+            headers: {
+                'X-API-Key': '{{ current_user.api_key }}'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            const usageContainer = document.getElementById('usageStats');
+            usageContainer.innerHTML = `
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-primary">${data.today_usage}</h4>
+                        <small class="text-muted">Used Today</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success">${data.remaining}</h4>
+                        <small class="text-muted">Remaining</small>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: ${(data.today_usage / data.daily_limit) * 100}%"></div>
+                    </div>
+                    <small class="text-muted">${data.today_usage} of ${data.daily_limit} emails used today</small>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error loading usage stats:', error);
+    }
+}
+
+function copyApiKey() {
+    const apiKeyInput = document.getElementById('apiKey');
+    apiKeyInput.select();
+    document.execCommand('copy');
+    showAlert('API key copied to clipboard!', 'success');
+}
+
+async function regenerateApiKey() {
+    if (confirm('Are you sure you want to regenerate your API key? This will invalidate the current key.')) {
+        const regenerateKeyBtn = document.getElementById('regenerateKeyBtn');
+        setLoadingState(regenerateKeyBtn, true);
+        
+        try {
+            const response = await fetch('/api/key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                document.getElementById('apiKey').value = result.api_key;
+                showAlert('API key regenerated successfully!', 'success');
+            } else {
+                showAlert('Failed to regenerate API key.', 'danger');
+            }
+        } catch (error) {
+            showAlert('An error occurred while regenerating the API key.', 'danger');
+        } finally {
+            setLoadingState(regenerateKeyBtn, false);
+        }
+    }
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %} 

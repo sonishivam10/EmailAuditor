@@ -1,180 +1,342 @@
-# Email Audit Service
+# Email Auditor - Production Ready
 
-## Overview
-This service audits email threads (.eml files) for quality and compliance, using a dynamic rules engine. It outputs a detailed report with scores, per-rule feedback, and a summary of strengths and areas for improvement.
+A professional email analysis and quality assessment service with a modern web interface, API access, and production-ready architecture.
 
-## Features
-- **Dynamic Rules Engine**: Rules defined in JSON, no code changes needed for new rules
-- **Email Thread Processing**: Handles both single emails and complete email threads
-- **Comprehensive Parsing**: Parses .eml files (plain text, basic HTML, attachments)
-- **Advanced Grammar Checks**: Detects incomplete sentences, common mistakes, and readability issues
-- **Clarity Analysis**: Evaluates structure, tone, formatting, and professional standards
-- **Per-rule Scoring**: Detailed scoring and justifications for each rule
-- **Thread Summary**: Provides overview of email thread characteristics
-- **Dockerized**: Easy local deployment and execution
+## 🚀 Features
 
-## Assignment Requirements Coverage
+- **Email Content Analysis**: Comprehensive grammar checking, style analysis, and quality scoring
+- **User Authentication**: Secure login/registration with email/mobile OTP verification
+- **API Access**: RESTful API for programmatic access with rate limiting
+- **Production Ready**: Scalable architecture with proper separation of concerns
+- **Modern Web UI**: Responsive design with Bootstrap 5 and custom styling
+- **Real-time Results**: Instant feedback on email quality and improvement suggestions
 
-### ✅ Dynamic Rules Engine
-- Rules defined in `rules.json` with function mappings
-- Can add, update, or remove rules without changing core code
-- Each rule evaluates one specific guideline
+## 🏗️ Architecture
 
-### ✅ Audit Report Generation
-- Numerical score per email thread (0-10 scale)
-- Pass/fail per rule with detailed explanations
-- Summary of strengths and areas for improvement
-- Thread-level analysis when processing multiple emails
+The application follows a production-ready architecture with:
 
-### ✅ Input Handling
-- Primary input: .eml file format
-- Handles plain-text and basic HTML content
-- Image attachment detection and validation
-- Email thread parsing and processing
+- **Application Factory Pattern**: Modular Flask application creation
+- **Blueprint Structure**: Organized routes and views
+- **Service Layer**: Business logic separation
+- **Model Layer**: Database models with relationships
+- **Configuration Management**: Environment-based configuration
+- **Rate Limiting**: API usage tracking and limits
+- **Logging**: Comprehensive logging system
 
-### ✅ Containerization
-- Complete Docker setup with Dockerfile
-- docker-compose.yml for easy local execution
-- Instructions for running with `docker-compose up`
+## 📁 Project Structure
 
-## Setup & Usage
-
-### Prerequisites
-- Docker and docker-compose installed
-
-### Dependencies
-The service requires the following Python packages (specified in `requirements.txt`):
-- `beautifulsoup4` - For HTML parsing
-- `textstat` - For text analysis and scoring
-
-### Running Locally
-1. Place your `.eml` file in the `emailAudit` directory.
-2. Build and run the service:
-
-   **Single Email (default):**
-   ```sh
-   docker-compose run --rm email-audit your-email-file.eml
-   ```
-
-   **Email Thread:**
-   ```sh
-   docker-compose run --rm email-audit your-email-file.eml --thread
-   ```
-
-### Output
-- JSON report printed to stdout
-- Includes thread summary, overall score, and per-email results
-
-## Project Structure
-- `main.py` - Entry point with thread processing support
-- `email_parser.py` - Parses .eml files and email threads
-- `rules_engine.py` - Loads and applies rules
-- `rules_impl.py` - Enhanced rule logic implementations
-- `audit_report.py` - Generates the report
-- `rules.json` - List of rules
-- `test_email.eml` - Sample good quality email
-- `test_email_with_issues.eml` - Sample problematic email
-- `test_email_thread.eml` - Sample email thread
-
-
-
-## Enhanced Features Beyond Requirements
-- **Sophisticated Grammar Analysis**: Incomplete sentence detection, common mistake identification, readability scoring
-- **Professional Communication Standards**: Greeting detection, tone analysis, formatting checks
-- **Thread Processing**: Support for analyzing complete email conversations
-- **Comprehensive Scoring**: Detailed feedback with specific improvement suggestions
-
-##  Test Files
-- `test_email.eml` - Professional email demonstrating good practices
-- `test_email_with_issues.eml` - Email with multiple quality issues
-- `test_email_thread.eml` - Complete email conversation with varying quality
-   - All test files include image attachments as required 
-
-## Usage Examples
-
-### Adding New Rules
-
-1. **Add rule definition** to `rules.json`:
-   ```json
-   {
-     "id": "response_time",
-     "description": "Check if email responds within expected timeframe.",
-     "function": "check_response_time"
-   }
-   ```
-
-2. **Implement rule function** in `rules_impl.py`:
-   ```python
-   def check_response_time(email_text):
-       # Your implementation here
-       return {'passed': True, 'score': 10, 'justification': 'Response time is acceptable.'}
-   ```
-
-3. **Add to mapping** in `main.py`:
-   ```python
-   RULES_IMPL_MAP = {
-       # ... existing rules
-       'check_response_time': rules_impl.check_response_time,
-   }
-   ```
-
-### Custom Email Analysis
-
-```bash
-# Analyze your own email file
-docker-compose run --rm email-audit your-email-file.eml
-
-# Analyze with custom rules file
-docker-compose run --rm email-audit your-email-file.eml --rules custom-rules.json
+```
+EmailAuditor/
+├── app/                          # Main application package
+│   ├── __init__.py              # Application factory
+│   ├── models/                  # Database models
+│   │   ├── __init__.py
+│   │   ├── user.py             # User model
+│   │   ├── otp.py              # OTP model
+│   │   └── audit.py            # Email audit model
+│   ├── services/               # Business logic services
+│   │   ├── __init__.py
+│   │   ├── email_service.py    # Email/OTP service
+│   │   ├── audit_service.py    # Email auditing service
+│   │   ├── email_parser.py     # Email parsing
+│   │   ├── rules_engine.py     # Rules evaluation
+│   │   ├── audit_report.py     # Report generation
+│   │   └── rules_impl.py       # Rule implementations
+│   ├── web/                    # Web interface routes
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   ├── api/                    # API routes
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   ├── utils/                  # Utility functions
+│   │   ├── __init__.py
+│   │   └── rate_limiter.py
+│   ├── templates/              # HTML templates
+│   └── static/                 # Static files (CSS, JS)
+├── config/                     # Configuration management
+│   ├── __init__.py
+│   └── config.py
+├── tests/                      # Test suite
+├── migrations/                 # Database migrations
+├── scripts/                    # Utility scripts
+├── logs/                       # Application logs
+├── uploads/                    # File uploads
+├── wsgi.py                     # WSGI entry point
+├── manage.py                   # Management commands
+├── requirements.txt            # Python dependencies
+├── Dockerfile                  # Production Docker image
+├── docker-compose.yml          # Multi-service deployment
+├── env.example                 # Environment variables template
+└── README.md                   # This file
 ```
 
-## Approach & Technology Choices
+## 🛠️ Installation
 
-- **Python**: Chosen for rapid development
-- **Docker**: Ensures consistent deployment across environments
-- **JSON Configuration**: Enables dynamic rule management
-- **Modular Architecture**: Facilitates easy extension and maintenance
-- **Comprehensive Testing**: Multiple test scenarios with real email formats
+### Prerequisites
 
-## 📋 Assumptions & Design Decisions
+- Python 3.11 or higher
+- pip (Python package installer)
+- Git
 
-### Email Format & Parsing
-- **Email Format**: Assumes standard .eml format with proper MIME structure
-- **Encoding**: Assumes UTF-8 encoding for email content; fallback handling for encoding issues
-- **HTML Parsing**: Basic HTML support only
-- **Attachments**: Focuses on image attachments for compliance
-- **Thread Detection**: Uses simple heuristics (multiple "From:" headers) to detect email threads
+### Quick Start
 
-### Grammar & Quality Assessment
-- **Grammar Rules**: Implements basic grammar checks; assumes professional business communication standards
-- **Greeting Detection**: Assumes professional greetings should appear in the first 3 lines of email content
-- **Sentence Completion**: Assumes sentences should end with proper punctuation (., !, ?)
-- **Common Mistakes**: Focuses on frequently confused words and missing apostrophes in contractions
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd EmailAuditor
+   ```
 
-### Professional Standards
-- **Tone Assessment**: Assumes professional emails should avoid excessive exclamation marks (>3) and ALL CAPS
-- **Structure**: Assumes emails should have multiple paragraphs and clear purpose indicators
-- **Length**: Assumes emails should be between 10-500 words for optimal clarity
-- **Closings**: Assumes professional emails should include appropriate closing phrases
+2. **Create virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Business Rules
-- **Scoring Scale**: Uses 0-10 scale where 7+ is considered acceptable quality
-- **Rule Weighting**: All rules have equal weight in overall score calculation
+4. **Set up environment variables**
+   ```bash
+   cp env.example .env
+   # Edit .env file with your configuration
+   ```
 
-### Limitations & Constraints
-- **Language**: Assumes English language emails only
-- **Domain**: Focuses on business/professional communication, not personal emails
-- **Real-time**: Designed for batch processing, not real-time email analysis
-- **Scale**: Optimized for individual email analysis, not high-volume enterprise processing
-- **Accuracy**: Rule-based approach provides guidance but may not catch all nuanced issues
+5. **Initialize database**
+   ```bash
+   python manage.py init-db
+   ```
 
-### Extensibility Assumptions
-- **Rule Addition**: Assumes new rules can be added without breaking existing functionality
-- **Configuration**: Assumes JSON format is sufficient for rule definitions
-- **Function Mapping**: Assumes rule functions follow consistent return format
-- **Error Handling**: Assumes graceful degradation when rules fail or content is malformed
+6. **Run the application**
+   ```bash
+   python wsgi.py
+   ```
 
+7. **Access the application**
+   - Web UI: http://localhost:5000
+   - API Documentation: http://localhost:5000/docs
 
-## Test Screenshot
-![Test Screenshot](image-1.png)
+## ⚙️ Configuration
+
+### Environment Variables
+
+Create a `.env` file based on `env.example`:
+
+```env
+# Flask Configuration
+FLASK_ENV=development
+SECRET_KEY=your-secret-key-change-this-in-production
+
+# Database Configuration
+DATABASE_URL=sqlite:///email_auditor.db
+# For production: postgresql://user:password@localhost/email_auditor
+
+# Email Configuration (for OTP)
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+SMTP_USE_TLS=true
+
+# Rate Limiting
+FREE_TIER_DAILY_LIMIT=5
+PREMIUM_TIER_DAILY_LIMIT=100
+
+# Security
+SESSION_COOKIE_SECURE=false
+SESSION_COOKIE_HTTPONLY=true
+SESSION_COOKIE_SAMESITE=Lax
+
+# Logging
+LOG_LEVEL=INFO
+LOG_FILE=logs/app.log
+```
+
+### Email Configuration
+
+For OTP functionality, configure SMTP settings:
+
+1. **Gmail Setup**:
+   - Enable 2-factor authentication
+   - Generate an App Password
+   - Use the App Password in `SMTP_PASSWORD`
+
+2. **Other Email Providers**:
+   - Update `SMTP_SERVER` and `SMTP_PORT` accordingly
+   - Use appropriate credentials
+
+## 🚀 Production Deployment
+
+### Docker Deployment
+
+1. **Build and run with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Access the application**
+   - Web UI: http://localhost:5000
+   - API: http://localhost:5000/api
+
+### Manual Deployment
+
+1. **Set production environment**
+   ```bash
+   export FLASK_ENV=production
+   export SECRET_KEY=your-secure-secret-key
+   ```
+
+2. **Use Gunicorn**
+   ```bash
+   pip install gunicorn
+   gunicorn -w 4 -b 0.0.0.0:5000 wsgi:app
+   ```
+
+3. **Set up reverse proxy** (nginx recommended)
+
+4. **Configure SSL/TLS** for secure communication
+
+## 📚 API Documentation
+
+### Authentication
+
+All API requests require an API key in the header:
+```
+X-API-Key: your_api_key_here
+```
+
+### Endpoints
+
+**1. Audit Email**
+```http
+POST /api/audit
+Content-Type: multipart/form-data
+X-API-Key: your_api_key
+
+file: [.eml file]
+```
+
+**2. Check Usage**
+```http
+GET /api/usage
+X-API-Key: your_api_key
+```
+
+**3. Manage API Key**
+```http
+GET /api/key
+POST /api/key
+```
+
+### Example Usage
+
+**Python:**
+```python
+import requests
+
+api_key = "your_api_key_here"
+url = "http://localhost:5000/api/audit"
+
+with open("email.eml", "rb") as f:
+    files = {"file": f}
+    headers = {"X-API-Key": api_key}
+    response = requests.post(url, files=files, headers=headers)
+    
+result = response.json()
+print(f"Email Score: {result['score']}")
+```
+
+**cURL:**
+```bash
+curl -X POST \
+  -H "X-API-Key: your_api_key_here" \
+  -F "file=@email.eml" \
+  http://localhost:5000/api/audit
+```
+
+## 🧪 Testing
+
+### Run Tests
+```bash
+pytest
+```
+
+### Run with Coverage
+```bash
+pytest --cov=app tests/
+```
+
+## 🔧 Management Commands
+
+### Initialize Database
+```bash
+python manage.py init-db
+```
+
+### Create Admin User
+```bash
+python manage.py create-admin
+```
+
+### Test Email Configuration
+```bash
+python manage.py test-email
+```
+
+## 📊 Monitoring
+
+### Logs
+Application logs are stored in `logs/app.log` with rotation.
+
+### Health Check
+```http
+GET /health
+```
+
+## 🔒 Security Features
+
+- **API Key Authentication**: Secure API access
+- **Rate Limiting**: Prevents abuse
+- **Input Validation**: File type and size validation
+- **SQL Injection Protection**: SQLAlchemy ORM
+- **XSS Protection**: Template escaping
+- **CSRF Protection**: Built-in Flask protection
+
+## 📈 Scalability
+
+- **Database**: Supports PostgreSQL for production
+- **Caching**: Redis integration ready
+- **Background Tasks**: Celery integration ready
+- **Load Balancing**: Gunicorn with multiple workers
+- **Horizontal Scaling**: Stateless application design
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue in the repository
+- Check the API documentation at `/docs`
+- Review the configuration examples
+
+## 🔄 Changelog
+
+### v2.0.0 - Production Ready
+- Complete code refactoring with proper architecture
+- Application factory pattern
+- Service layer implementation
+- Production deployment support
+- Comprehensive testing setup
+- Monitoring and logging
+- Security enhancements
